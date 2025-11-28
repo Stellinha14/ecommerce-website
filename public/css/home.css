@@ -14,7 +14,14 @@ body {
     background-image: none !important;
 }
 
-
+.tile{
+    font-family: 'League Spartan', sans-serif !important;
+    font-size: 2rem !important;
+    font-weight: 300;
+}
+main{
+    margin-top: 5%;
+}
 .nava {
     background-color: transparent !important;
     position: absolute;

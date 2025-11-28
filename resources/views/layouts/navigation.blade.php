@@ -24,17 +24,17 @@
                     @auth
                         <!-- Exemplo: Link para produtos -->
                         <x-nav-link :href="route('filmes.index')" :active="request()->routeIs('filmes.*')">
-                            {{ __('Filmes') }}
+                            {{ __('Filmes 🎥') }}
                         </x-nav-link>
                         <x-nav-link :href="route('carrinho.index')" :active="request()->routeIs('carrinho.*')">
-                            {{ __('Carrinho') }}
+                            {{ __('Carrinho 🛒') }}
                         </x-nav-link>
 
                          <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.index')">
-                            {{ __('Meus Pedidos') }}
+                            {{ __('Meus Pedidos 📦') }}
                         </x-nav-link>
                         <x-nav-link :href="route('favoritos.index')" :active="request()->routeIs('favoritos.index')">
-                            {{ __('❤️ Favoritos') }}
+                            {{ __('Favoritos ❤️') }}
                         </x-nav-link>
                     @endauth
                 </div>
@@ -119,10 +119,16 @@
             </x-responsive-nav-link>
             @auth
                 <x-responsive-nav-link :href="route('filmes.index')" :active="request()->routeIs('filmes.*')">
-                    {{ __('Filmes') }}
+                    {{ __('Filmes 🎥') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('favoritos.index')" :active="request()->routeIs('favoritos.index')">
-                    {{ __('❤️ Favoritos') }}
+                    {{ __('Favoritos ❤️') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.index')">
+                    {{ __('Meus Pedidos 📦') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('carrinho.index')" :active="request()->routeIs('carrinho.*')">
+                        {{ __('Carrinho 🛒') }}
                 </x-responsive-nav-link>
 
             @endauth

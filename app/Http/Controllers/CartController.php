@@ -2,42 +2,66 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Models\Filme;
-use Cart;
+
+use Darryldecode\Cart\Facades\CartFacade as Cart; 
 
 class CartController extends Controller
 {
-    // Mostra o carrinho
+    
     public function index()
     {
-        // Pega o carrinho da sessão do usuário logado
-        $cart = Cart::session(auth()->id());
-        return view('cart.cart', compact('cart'));
+        
+        $cartItems = Cart::getContent(); 
+        return view('cart.cart', compact('cartItems')); 
     }
 
-    // Adiciona filme ao carrinho
-    public function adicionar($id)
+   
+    public function addToCart(Request $request, $id) 
     {
-        $filme = Filme::findOrFail($id);
+        $product = Product::find($id);
 
-        Cart::session(auth()->id())->add([
-            'id' => $filme->id,
-            'name' => $filme->titulo ?? 'Sem título',
-            'price' => $filme->preco ?? 0,
-            'quantity' => 1,
+        if (!$product) {
+            return redirect()->back()->with('error', 'Produto não encontrado!'); 
+        }
+
+        Cart::add([
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $product->price,
+            'quantity' => $request->input('quantity', 1), 
             'attributes' => [
-                'capa' => $filme->capa ?? ''
+                'image' => $product->image 
             ]
         ]);
 
-        return back()->with('success', 'Filme adicionado ao carrinho!');
+        return redirect()->route('carrinho.index')->with('success', 'Produto adicionado ao carrinho!');
     }
 
-    // Remove item do carrinho
-    public function remover($id)
+
+    
+    public function update(Request $request, $id) 
     {
-        Cart::session(auth()->id())->remove($id);
-        return back()->with('success', 'Filme removido do carrinho.');
+        $request->validate([
+            'quantity' => 'required|integer|min:1' 
+        ]);
+
+        Cart::update($id, [
+            'quantity' => [
+                'relative' => false, 
+                'value' => $request->quantity
+            ],
+        ]);
+
+        return redirect()->route('carrinho.index')->with('success', 'Quantidade atualizada no carrinho!');
+    }
+
+    
+    public function remove($id) 
+    {
+        Cart::remove($id);
+
+        return redirect()->route('carrinho.index')->with('success', 'Produto removido do carrinho!');
     }
 }

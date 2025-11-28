@@ -5,31 +5,44 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
-use Cart;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
 
 class CheckoutController extends Controller
 {
     public function index()
     {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        Stripe::setApiKey(config('services.stripe.secret'));
 
         $total = Cart::getTotal();
-        if ($total <= 0) {
-            return redirect()->route('carrinho.index')->with('error', 'Seu carrinho está vazio.');
+        $amount = (int) ($total * 100); 
+
+        if ($amount <= 0) {
+            return redirect()->route('carrinho.index')
+                ->with('error', 'Seu carrinho está vazio.');
         }
 
-        $amount = (int) ($total * 100); // centavos
+       
+        if ($amount >= 99999999) { 
+            return redirect()->route('carrinho.index')
+                ->with('error', 'Valor muito alto! Esvazie o carrinho e tente novamente.');
+        }
 
-        $intent = PaymentIntent::create([
-            'amount' => $amount,
-            'currency' => 'brl',
-            'payment_method_types' => ['card'],
-        ]);
+        try {
+            $intent = PaymentIntent::create([
+                'amount' => $amount,
+                'currency' => 'brl',
+                'payment_method_types' => ['card'],
+            ]);
 
-        return view('checkout.index', [
-            'clientSecret' => $intent->client_secret,
-            'stripeKey' => env('STRIPE_KEY'),
-        ]);
+            return view('checkout.index', [
+                'clientSecret' => $intent->client_secret,
+                'stripeKey' => config('services.stripe.key'),
+            ]);
+
+        } catch (\Exception $e) {
+            return redirect()->route('carrinho.index')
+                ->with('error', 'Erro no Stripe: ' . $e->getMessage());
+        }
     }
 
     public function store(Request $request)
@@ -37,18 +50,16 @@ class CheckoutController extends Controller
         $cartItems = Cart::getContent();
 
         if ($cartItems->isEmpty()) {
-            return redirect()->route('carrinho.index')->with('error', 'Seu carrinho está vazio.');
+            return redirect()->route('carrinho.index')->with('error', 'Carrinho vazio.');
         }
 
-        $total = Cart::getTotal();
-
         $order = auth()->user()->orders()->create([
-            'total' => $total,
+            'total' => Cart::getTotal(),
         ]);
 
         foreach ($cartItems as $item) {
             $order->items()->create([
-                'filme_id' => $item->id,
+                'product_id' => $item->id,
                 'quantity' => $item->quantity,
                 'price' => $item->price,
             ]);
@@ -56,6 +67,6 @@ class CheckoutController extends Controller
 
         Cart::clear();
 
-        return response()->json(['success' => true]);
+        return redirect()->route('orders.index')->with('success', 'Pedido realizado!');
     }
 }

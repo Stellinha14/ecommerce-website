@@ -3,29 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Product;
+use App\Models\Filme;
 use Cart;
 
 class CartController extends Controller
 {
+    // Mostra o carrinho
     public function index()
     {
-        return view('cart.cart');
+        // Pega o carrinho da sessão do usuário logado
+        $cart = Cart::session(auth()->id());
+        return view('cart.cart', compact('cart'));
     }
 
-    public function addToCart(Request $request, $id)
+    // Adiciona filme ao carrinho
+    public function adicionar($id)
     {
-        $product = Product::findOrFail($id);
+        $filme = Filme::findOrFail($id);
 
-        $quantity = $request->input('quantity', 1);
+        Cart::session(auth()->id())->add([
+            'id' => $filme->id,
+            'name' => $filme->titulo ?? 'Sem título',
+            'price' => $filme->preco ?? 0,
+            'quantity' => 1,
+            'attributes' => [
+                'capa' => $filme->capa ?? ''
+            ]
+        ]);
 
-        Cart::add(
-            $product->id,
-            $product->name,
-            $quantity,
-            $product->price
-        );
+        return back()->with('success', 'Filme adicionado ao carrinho!');
+    }
 
-        return redirect()->route('cart.index')->with('success', 'Produto adicionado ao carrinho!');
+    // Remove item do carrinho
+    public function remover($id)
+    {
+        Cart::session(auth()->id())->remove($id);
+        return back()->with('success', 'Filme removido do carrinho.');
     }
 }

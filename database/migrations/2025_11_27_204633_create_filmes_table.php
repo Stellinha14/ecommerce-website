@@ -9,23 +9,25 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
+    public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('filmes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description');
-            $table->decimal('price', 8, 2);
-            $table->string('image')->nullable();
+            $table->string('titulo');
+            $table->string('capa'); // arquivo da imagem
+            $table->text('descricao')->nullable();
+            $table->string('categoria')->nullable();
+            $table->integer('ano')->nullable();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('filmes');
     }
 };

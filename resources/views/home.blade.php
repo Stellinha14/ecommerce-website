@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container text-center py-5">
-
-    {{-- Nome da loja --}}
-    <h1 class="display-4 mb-3">Bem-vindo à Minha Loja</h1>
-
-    {{-- Chamada principal --}}
-    <p class="lead mb-4">Confira nossos produtos incríveis com os melhores preços!</p>
-
-    {{-- Botão para ir para o catálogo --}}
-    <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg">Ver Produtos</a>
+<div class="hero-container">
+    <h1 class="hero-title">Filmes, séries e muito mais, sem limites</h1>
+    <p class="hero-subtitle"><b>A partir de <span>R$ 20,90</span>. Cancele quando quiser.</b></p>
+    <div class="hero-row">
+        <p class="hero-email-text">Quer assistir? Informe seu email para criar ou reiniciar sua assinatura.</p>
+        <div class="hero-row">
+            <input type="email" id="emailInput" placeholder="Email" class="hero-email">
+            <button id="goButton" class="btn-primary hero-btn">Vamos lá <i class="fa-solid fa-arrow-right" style="color: #ffffff;"></i></button>
+        </div>
+    </div>
 </div>
 @endsection

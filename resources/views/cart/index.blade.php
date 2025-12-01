@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-        body {
+    body {
         background: #06080c !important;
         color: #fff;
     }
@@ -10,7 +10,8 @@
         font-family: 'League Spartan', sans-serif;
         font-size: 2rem;
         font-weight: 700;
-        color: #fff;
+        color: #52aaff; /* Ajustei a cor para combinar com o tema */
+        text-shadow: 0 0 6px #1b5f99;
     }
 
     .table-dark {
@@ -49,6 +50,7 @@
     <h1 class="titulo-carrinho mb-4">Meu Carrinho 🎬</h1>
 
     @php
+        // Acesso ao carrinho na View é válido
         $cart = Cart::session(auth()->id());
     @endphp
 
@@ -72,8 +74,13 @@
                         <td>{{ $item->name }}</td>
 
                         <td>
-                            @if($item->attributes->capa)
-                                <img src="{{ asset('storage/' . $item->attributes->capa) }}" width="65" class="rounded">
+                            {{-- CORREÇÃO AQUI: Usando 'image', que é a chave correta salva pelo Controller --}}
+                            @php
+                                $capaPath = $item->attributes->get('image');
+                            @endphp
+                            
+                            @if($capaPath)
+                                <img src="{{ asset('storage/' . $capaPath) }}" width="65" class="rounded">
                             @else
                                 <img src="https://via.placeholder.com/70x100?text=Sem+Capa" class="rounded">
                             @endif
@@ -84,7 +91,8 @@
                         <td>R$ {{ number_format($item->quantity * $item->price, 2, ',', '.') }}</td>
 
                         <td>
-                            <form action="{{ route('carrinho.remover', $item->id) }}" method="POST">
+                            {{-- Rota corrigida para 'carrinho.remove' --}}
+                            <form action="{{ route('carrinho.remove', $item->id) }}" method="POST">
                                 @csrf
                                 <button class="btn btn-remove btn-sm text-white">Remover</button>
                             </form>

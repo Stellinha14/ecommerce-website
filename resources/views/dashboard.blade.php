@@ -179,8 +179,8 @@
                             </button>
                         </form>
 
-                        {{-- Carrinho --}}
-                        <form action="{{ route('carrinho.adicionar', $filme->id) }}" method="POST">
+                        {{-- Carrinho (CORRIGIDO: 'carrinho.adicionar' => 'carrinho.add') --}}
+                        <form action="{{ route('carrinho.add', $filme->id) }}" method="POST">
                             @csrf
                             <button type="submit">🛒</button>
                         </form>

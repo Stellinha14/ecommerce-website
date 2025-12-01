@@ -18,7 +18,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-10">
 
     <div class="min-h-screen">
 
@@ -48,22 +48,27 @@
             return regex.test(email);
         }
 
-        document.getElementById('goButton').addEventListener('click', function () {
-            const email = document.getElementById('emailInput').value.trim();
+        // CORREÇÃO: Envolver o código em uma verificação para garantir que o elemento exista.
+        const goButton = document.getElementById('goButton');
 
-            if (email === "") {
-                alert("Por favor, digite seu email antes de continuar.");
-                return;
-            }
+        if (goButton) {
+            goButton.addEventListener('click', function () {
+                const email = document.getElementById('emailInput').value.trim();
 
-            if (!validarEmail(email)) {
-                alert("Digite um email válido (ex: nome@gmail.com)");
-                return;
-            }
+                if (email === "") {
+                    alert("Por favor, digite seu email antes de continuar.");
+                    return;
+                }
 
-            window.location.href = "{{ route('register') }}" +
-                "?email=" + encodeURIComponent(email);
-        });
+                if (!validarEmail(email)) {
+                    alert("Digite um email válido (ex: nome@gmail.com)");
+                    return;
+                }
+
+                window.location.href = "{{ route('register') }}" +
+                    "?email=" + encodeURIComponent(email);
+            });
+        }
     </script>
 
 </body>

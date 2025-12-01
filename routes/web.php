@@ -37,17 +37,20 @@ Route::middleware('auth')->group(function () {
     // Histórico de pedidos
     Route::get('/meus-pedidos', [OrderController::class, 'index'])->name('orders.index');
 
-    // Carrinho
+    // Carrinho (Rotas corrigidas e completas)
     Route::get('/cart', [CartController::class, 'index'])->name('carrinho.index');
-    Route::post('/cart/add/{id}', [CartController::class, 'adicionar'])->name('carrinho.adicionar');
-    Route::post('/cart/remove/{id}', [CartController::class, 'remover'])->name('carrinho.remover');
+    // ROTA PARA ADICIONAR ITEM. O nome CORRETO é 'carrinho.add'
+    Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('carrinho.add');
+    // Adicionada rota de atualização, presente no seu CartController
+    Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('carrinho.update');
+    Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('carrinho.remove');
+
 
     // Checkout finalização
-      Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
 });
 
-// Tela de checkout
-Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+// A rota de checkout já foi definida dentro do grupo 'auth', removida a duplicação.
 
 require __DIR__.'/auth.php';

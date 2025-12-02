@@ -18,8 +18,8 @@ return [
     // CONFIGURAÇÃO DO STRIPE (ADICIONADA)
     // ==========================================================
     'stripe' => [
-        'key' => env('STRIPE_KEY'),       // Chave pública (pk_test_...)
-        'secret' => env('STRIPE_SECRET'), // Chave secreta (sk_test_...)
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
     ],
     // ==========================================================
 

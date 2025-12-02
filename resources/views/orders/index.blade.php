@@ -41,7 +41,7 @@
                 <ul>
                     @foreach ($order->items as $item)
                         <li>
-                            {{ $item->product->name }} • 
+                            {{ $item->filme->name }} • 
                             Qtd: {{ $item->quantity }} • 
                             Preço: R$ {{ number_format($item->price, 2, ',', '.') }}
                         </li>

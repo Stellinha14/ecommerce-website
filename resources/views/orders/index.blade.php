@@ -15,7 +15,6 @@
         font-size: 2rem;
         font-weight: 700;
         color: #52aaff;
-        font-weight: 700;
         text-shadow: 0 0 6px #1b5f99;
         margin-bottom: 20px;
     }
@@ -41,7 +40,7 @@
                 <ul>
                     @foreach ($order->items as $item)
                         <li>
-                            {{ $item->filme->name }} • 
+                            {{ $item->filme->titulo }} • 
                             Qtd: {{ $item->quantity }} • 
                             Preço: R$ {{ number_format($item->price, 2, ',', '.') }}
                         </li>

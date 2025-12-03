@@ -156,7 +156,18 @@
             @foreach ($filmes as $filme)
                 <div class="filme-card">
 
-                    <img src="{{ asset('storage/' . $filme->capa) }}" alt="{{ $filme->titulo }}">
+                    @php
+                        $imgSeed = public_path('img/' . $filme->capa);
+                        $imgUpload = public_path('storage/filmes/' . $filme->capa);
+                    @endphp
+
+                    @if($filme->capa && file_exists($imgSeed))
+                        <img src="{{ asset('img/' . $filme->capa) }}" alt="{{ $filme->titulo }}">
+                    @elseif($filme->capa)
+                        <img src="{{ asset('storage/' . $filme->capa) }}" class="img-fluid rounded shadow">
+                    @else
+                        <img src="https://via.placeholder.com/400x600?text=Sem+Capa" alt="{{ $filme->titulo }}">
+                    @endif
 
                     <div class="filme-info">
                         <div class="filme-titulo">{{ $filme->titulo }}</div>
@@ -166,7 +177,6 @@
                     </div>
 
                     <div class="card-icons">
-
                         {{-- Favorito --}}
                         <form action="{{ route('filme.favorito', $filme->id) }}" method="POST">
                             @csrf
@@ -179,12 +189,11 @@
                             </button>
                         </form>
 
-                        {{-- Carrinho (CORRIGIDO: 'carrinho.adicionar' => 'carrinho.add') --}}
+                        {{-- Carrinho --}}
                         <form action="{{ route('carrinho.add', $filme->id) }}" method="POST">
                             @csrf
                             <button type="submit">🛒</button>
                         </form>
-
                     </div>
 
                 </div>

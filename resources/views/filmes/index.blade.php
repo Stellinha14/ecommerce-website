@@ -14,7 +14,6 @@
         text-shadow: 0 0 6px #1b5f99;
     }
 
-    /* 4 colunas */
     @media (min-width: 992px) {
         .filmes-grid {
             display: grid;
@@ -23,7 +22,6 @@
         }
     }
 
-    /* ===== CARD MAIOR COM IMG FULL ===== */
     .card {
         position: relative;
         height: 380px;
@@ -39,7 +37,6 @@
         box-shadow: 0 0 18px rgba(80, 150, 255, 0.25);
     }
 
-    /* ===== Imagem ocupa TODO o card ===== */
     .card-img {
         position: absolute;
         inset: 0;
@@ -50,12 +47,10 @@
         transition: .3s;
     }
 
-    /* Clareia no hover */
     .card:hover .card-img {
         filter: brightness(0.85);
     }
 
-    /* ===== Overlay ===== */
     .card-overlay {
         position: absolute;
         bottom: 0;
@@ -85,7 +80,6 @@
         text-shadow: 0 0 6px #0c2c47;
     }
 
-    /* Botão Detalhes */
     .btn-primary {
         background: #143a63;
         border: none;
@@ -96,7 +90,6 @@
         background: #195083;
     }
 
-    /* Botão Editar — turquesinha linda */
     .btn-warning {
         background: #3db6c0;
         border: none;
@@ -108,7 +101,6 @@
         background: #54d0da;
     }
 
-    /* Botão Excluir — vermelho frio bonito */
     .btn-danger {
         background: #521f2f;
         border: none;
@@ -119,14 +111,12 @@
         background: #74293f;
     }
 
-    /* Botão novo filme */
     .btn-success {
         background: #2369b0;
         border: none;
         font-weight: bold;
     }
 </style>
-
 
 <div class="container py-4" style="max-width: 1300px;">
 
@@ -140,46 +130,44 @@
         @forelse($filmes as $filme)
 
         <div>
-
             <div class="card">
 
-                @if($filme->capa)
-                    <img src="{{ asset('storage/' . $filme->capa) }}" class="card-img" alt="{{ $filme->titulo }}">
+                @php
+                    $imgSeed = public_path('img/' . $filme->capa);
+                    $imgUpload = 'storage/filmes/' . $filme->capa;
+                @endphp
+
+                @if($filme->capa && file_exists($imgSeed))
+                    <img src="{{ asset('img/' . $filme->capa) }}" class="card-img" alt="{{ $filme->titulo }}">
+                @elseif($filme->capa)
+                        <img src="{{ asset('storage/' . $filme->capa) }}" class="img-fluid rounded shadow">
                 @else
                     <img src="https://via.placeholder.com/400x600?text=Sem+Capa" class="card-img">
                 @endif
 
                 <div class="card-overlay">
                     <h5 class="card-title">{{ $filme->titulo }}</h5>
-
                     <p class="card-info">
                         {{ $filme->categoria }} • {{ $filme->ano }}
                     </p>
-
                     <p class="card-price">
                         R$ {{ number_format($filme->preco, 2, ',', '.') }}
                     </p>
-
-                    <a href="{{ route('filmes.show', $filme->id) }}" 
-                       class="btn btn-primary w-100 mb-2">
-                       Ver Detalhes
+                    <a href="{{ route('filmes.show', $filme->id) }}" class="btn btn-primary w-100 mb-2">
+                        Ver Detalhes
                     </a>
                 </div>
-
             </div>
 
-            <!-- Botões fora do card SEM ATRAPALHAR NADA -->
             <div class="d-flex justify-content-between mt-2">
-                <a href="{{ route('filmes.edit', $filme->id) }}"
-                   class="btn btn-warning btn-sm px-3">
+                <a href="{{ route('filmes.edit', $filme->id) }}" class="btn btn-warning btn-sm px-3">
                     Editar
                 </a>
 
                 <form action="{{ route('filmes.destroy', $filme->id) }}" method="POST" class="m-0">
                     @csrf
                     @method('DELETE')
-                    <button class="btn btn-danger btn-sm px-3"
-                            onclick="return confirm('Deseja realmente excluir?')">
+                    <button class="btn btn-danger btn-sm px-3" onclick="return confirm('Deseja realmente excluir?')">
                         Excluir
                     </button>
                 </form>

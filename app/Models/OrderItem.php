@@ -8,7 +8,7 @@ class OrderItem extends Model
 {
     protected $fillable = [
         'order_id',
-        'p/filme_id',
+        'filme_id', // Corrigido: antes estava 'p/filme_id'
         'quantity',
         'price',
     ];
@@ -19,7 +19,7 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class);
     }
 
-    // Item pertence a um produto
+    // Item pertence a um filme
     public function filme()
     {
         return $this->belongsTo(Filme::class);

@@ -2,6 +2,10 @@
 
 @section('content')
 <style>
+      body {
+        background: #06080c !important;
+        color: #fff;
+    }
     .pedido-box {
         background: #0d1117;
         border: 1px solid #1f2937;

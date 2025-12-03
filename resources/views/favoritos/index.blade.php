@@ -48,7 +48,7 @@
         @foreach ($favoritos as $filme)
             <div class="col-md-3 mb-4">
                 <div class="card fav-card">
-                    <img src="{{ asset('storage/' . $filme->capa) }}" class="card-img-top">
+                    <img src="{{ asset('img/' . $filme->capa) }}" class="card-img-top">
 
                     <div class="card-body">
                         <h5 class="fav-title">{{ $filme->titulo }}</h5>

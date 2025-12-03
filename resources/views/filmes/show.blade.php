@@ -57,12 +57,18 @@
     <div class="row g-4">
         
         <div class="col-md-5">
-            @if($filme->capa)
-                <img src="{{ asset('storage/' . $filme->capa) }}" class="img-fluid rounded shadow">
-            @else
-                <img src="https://via.placeholder.com/600x400?text=Sem+Capa"
-                     class="img-fluid rounded shadow">
-            @endif
+            @php
+                    $imgSeed = public_path('img/' . $filme->capa);
+                    $imgUpload = 'storage/filmes/' . $filme->capa;
+                @endphp
+
+                @if($filme->capa && file_exists($imgSeed))
+                    <img src="{{ asset('img/' . $filme->capa) }}" class="card-img" alt="{{ $filme->titulo }}">
+                @elseif($filme->capa)
+                        <img src="{{ asset('storage/' . $filme->capa) }}" class="img-fluid rounded shadow">
+                @else
+                    <img src="https://via.placeholder.com/400x600?text=Sem+Capa" class="card-img">
+                @endif
         </div>
 
         <div class="col-md-7">

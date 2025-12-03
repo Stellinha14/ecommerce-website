@@ -10,7 +10,7 @@ use App\Models\OrderItem;
 
 class CheckoutController extends Controller
 {
-    // Exibe a página de checkout
+    // Página de checkout
     public function index()
     {
         $cart = Cart::session(Auth::id())->getContent();
@@ -20,27 +20,27 @@ class CheckoutController extends Controller
                 ->with('error', 'Seu carrinho está vazio.');
         }
 
-        // PEGAR CHAVE PÚBLICA DO STRIPE
+        // Stripe
         $stripeKey = config('services.stripe.key');
-
-        // CRIAR PAYMENT INTENT PARA PEGAR O client_secret
         \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
+        // PaymentIntent
         $intent = \Stripe\PaymentIntent::create([
-            'amount'   => intval(Cart::session(Auth::id())->getTotal() * 100), // valor em centavos
+            'amount'   => intval(Cart::session(Auth::id())->getTotal() * 100),
             'currency' => 'brl',
         ]);
 
-        $clientSecret = $intent->client_secret;
-
-        return view('checkout.index', compact('cart', 'stripeKey', 'clientSecret'));
+        return view('checkout.index', [
+            'cart' => $cart,
+            'stripeKey' => $stripeKey,
+            'clientSecret' => $intent->client_secret,
+        ]);
     }
 
-    // Finaliza o pedido após pagamento aprovado
+    // Finaliza o pedido
     public function store(Request $request)
     {
         try {
-            // Pega o conteúdo do carrinho como Collection
             $cart = Cart::session(Auth::id())->getContent();
 
             if ($cart->count() == 0) {
@@ -58,18 +58,16 @@ class CheckoutController extends Controller
                 'total'   => $total,
             ]);
 
-            // Loop pelos itens do carrinho
+            // Salva todos os itens
             foreach ($cart as $item) {
-                // Converte para array para acessar os dados
-                $itemArray = (array)$item;
 
-                $filmeId  = $itemArray['id'] ?? null;
-                $price    = $itemArray['price'] ?? 0;
-                $quantity = $itemArray['quantity'] ?? 1;
+                $filmeId  = $item->id;
+                $price    = $item->price;
+                $quantity = $item->quantity;
 
                 if (!$filmeId) {
-                    \Log::warning('Item sem ID detectado no carrinho!', $itemArray);
-                    continue; // pula o item sem ID
+                    \Log::warning('Item sem ID no carrinho', ['item' => $item]);
+                    continue;
                 }
 
                 OrderItem::create([
@@ -80,17 +78,19 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            // Limpa o carrinho
+            // Limpa carrinho
             Cart::session(Auth::id())->clear();
 
-            // Retorna JSON com redirect
             return response()->json([
                 'success' => true,
                 'redirect' => route('orders.index')
             ]);
+
         } catch (\Exception $e) {
-            \Log::error('Erro ao finalizar pedido: ' . $e->getMessage(), [
-                'cart' => $cart->toArray()
+
+            \Log::error('Erro ao finalizar pedido', [
+                'message' => $e->getMessage(),
+                'cart'    => $cart ?? 'sem cart',
             ]);
 
             return response()->json([

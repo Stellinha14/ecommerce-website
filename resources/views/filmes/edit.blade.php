@@ -111,7 +111,7 @@
                 <input type="file" name="capa" class="form-control" accept="image/*">
 
                 @if($filme->capa)
-                    <img src="{{ asset('storage/' . $filme->capa) }}"
+                    <img src="{{ asset('img/' . $filme->capa) }}"
                          class="img-fluid mt-3 rounded"
                          style="max-height: 240px;">
                 @endif
